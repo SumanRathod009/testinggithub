@@ -6,10 +6,10 @@ on:
   pull_request:
     paths:
       - 'templates/cloudformation/**/*.yaml'
-	    - 'templates/cloudformation/**/*.json'      
-	    - 'cloudformation/**/*.yaml'
-	    - 'cloudformation/**/*.yml'
-	    - 'cloudformation/**/*.json'
+      - 'templates/cloudformation/**/*.json'      
+      - 'cloudformation/**/*.yaml'
+      - 'cloudformation/**/*.yml'
+      - 'cloudformation/**/*.json'
     branches:
       - main
   push:   # This is only run when PRs are merged into master
