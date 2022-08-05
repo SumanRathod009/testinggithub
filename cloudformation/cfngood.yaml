@@ -58,8 +58,4 @@ Outputs:
     Description: 'Template version.'
     Value: '1.0'
 
-  TerraformLauncherStatus:
-    Description: "SQSQueueHandler status."
-    Value: !GetAtt SQSQueueHandler.status
-
 
