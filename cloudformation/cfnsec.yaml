@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'Catalog Product: Self-service product.'
+
+# CloudFormation parameter UI definitions
+Metadata:
+  Identifier:
+    Value: sc-product
+  Release:
+    Version: '1.0'
+  ProductName:
+    Value: dna_cross_account_lfdb_share
+
+#Input Parameters to be configured for the service catalog product 
+Parameters:
+  Environment:
+    Type: String  
+    Description: 'Environment to determine the catalog.'
+    AllowedValues:
+      - Dev
+      - Test
+      - Val
+      - Prod
+  DatabaseName:
+    Type: String
+    Description: 'Name of the database'
+    AllowedPattern: '[a-zA-Z0-9_-]*'
+    ConstraintDescription: 'Can contain only alphanumeric characters, dashes and underscores'
+  TableName:
+    Type: String
+    Description: 'Table name for which permissions to be provided.'
+    Default: 'ALL_TABLES'
+    AllowedPattern: '[a-zA-Z0-9_-]*'
+    ConstraintDescription: 'Can contain only alphanumeric characters, dashes and underscores'
+  TargetAccount:
+    Description: 'Account number for which permissions to be provided'
+    Type: String
+    MaxLength: '50'
+    AllowedPattern: '^\d{12}$'
+    ConstraintDescription: 'Can contain numbers up to 12 characters.'
+    
+    
+Resources:  
+  SQSQueueHandler:
+    Type: 'Custom::SQSQueueHandler'
+    Properties:
+      ServiceToken: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:sqs_queue_handler' 
+      StackName: !Ref 'AWS::StackName'
+      Environment: !Ref Environment
+      DatabaseName: !Ref DatabaseName
+      TableName: !Ref TableName
+      AccessType: 'grant'
+      DataLakePrincipalIdentifier: !Ref TargetAccount
+      
+              
+# Outputs useful in other templates or to user
+Outputs:
+  TemplateVersion:
+    Description: 'Template version.'
+    Value: '1.0'
+
+  TerraformLauncherStatus:
+    Description: "SQSQueueHandler status."
+    Value: !GetAtt SQSQueueHandler.status
+
+
